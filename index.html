@@ -106,7 +106,7 @@ p { margin: 0; }
 }
 .hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr); gap: 56px; align-items: center; }
 .hero-copy { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
-.hero h1 { font-size: clamp(34px, 5vw, 58px); line-height: 1.04; font-weight: 700; }
+.hero h1 { font-size: clamp(32px, 4.3vw, 52px); line-height: 1.06; font-weight: 700; }
 .hero h1 .hl { color: var(--accent); }
 .hero-sub { font-size: 18px; color: var(--muted); max-width: 33em; }
 .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
@@ -279,6 +279,93 @@ footer a { color: var(--muted); text-decoration: none; font-weight: 600; }
 footer a:hover { color: var(--text); }
 footer .sp { margin-left: auto; }
 
+/* ---------- motion and effects */
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.hero-copy > * { animation: rise .7s cubic-bezier(.2,.7,.2,1) both; }
+.hero-copy > :nth-child(2) { animation-delay: .08s; }
+.hero-copy > :nth-child(3) { animation-delay: .16s; }
+.hero-copy > :nth-child(4) { animation-delay: .24s; }
+.hero-copy > :nth-child(5) { animation-delay: .32s; }
+.hero .app { animation: rise .9s .2s cubic-bezier(.2,.7,.2,1) both; }
+#net { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none;
+  -webkit-mask-image: radial-gradient(70% 80% at 60% 40%, #000 30%, transparent 85%); mask-image: radial-gradient(70% 80% at 60% 40%, #000 30%, transparent 85%); }
+.rot { display: inline-block; color: var(--accent); white-space: nowrap; }
+.rot > span { display: inline-block; animation: word .55s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes word { from { opacity: 0; transform: translateY(.4em); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+
+/* services marquee */
+.strip .wrap { flex-wrap: nowrap; }
+.marquee { flex: 1; min-width: 0; overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.track { display: flex; gap: 40px; width: max-content; animation: slide 28s linear infinite; }
+.track span { display: inline-flex; align-items: center; gap: 10px; font: 600 17px/1 var(--font-display); color: var(--muted); white-space: nowrap; }
+.track span::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+.marquee:hover .track { animation-play-state: paused; }
+@keyframes slide { to { transform: translateX(-50%); } }
+
+/* cursor glow on cards */
+.glow { --mx: 50%; --my: -200px; background-image: radial-gradient(320px circle at var(--mx) var(--my), rgba(46,230,200,.09), transparent 60%); }
+
+/* moving border on the popular plan */
+@property --ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.plan.pop::before {
+  content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: conic-gradient(from var(--ang), transparent 0 60%, var(--accent) 75%, #7c6cff 85%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); animation: spinb 4s linear infinite;
+}
+@keyframes spinb { to { --ang: 360deg; } }
+
+/* steps: a line that fills as you scroll */
+.steps { position: relative; }
+.steps .fill { position: absolute; left: 0; top: -1px; height: 2px; width: calc(var(--p, 0) * 100%); background: linear-gradient(90deg, var(--accent), #7c6cff); box-shadow: 0 0 12px rgba(46,230,200,.6); }
+
+/* before / after */
+.cmp { border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--panel); padding: 26px; display: grid; gap: 22px; max-width: 860px; }
+.cmp-top { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+.cmp-top b { font: 600 15px/1 var(--font-body); color: var(--muted); transition: color .3s; }
+.cmp[data-on="false"] .lbl-off, .cmp[data-on="true"] .lbl-on { color: var(--text); }
+.cmp .switch.big { width: 64px; height: 34px; margin-left: 0; }
+.cmp .switch.big::after { width: 26px; height: 26px; top: 4px; left: 4px; }
+.cmp .switch.big[aria-checked="true"]::after { transform: translateX(30px); }
+.svc { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.svc li { display: grid; grid-template-columns: 110px minmax(0, 1fr) 128px; gap: 16px; align-items: center; padding: 12px 14px; border-radius: var(--r-sm); background: var(--bg2); }
+.svc .nm { font-weight: 700; font-size: 15px; }
+.svc .bar { height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.svc .bar i { display: block; height: 100%; width: var(--w, 10%); border-radius: inherit; background: var(--red); transition: width .9s cubic-bezier(.2,.7,.2,1), background .5s; }
+.svc .st { justify-self: end; display: inline-flex; align-items: center; gap: 8px; font: 600 13px/1 var(--font-body); color: var(--red); white-space: nowrap; transition: color .4s; }
+.svc .st::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.cmp[data-on="true"] .svc .bar i { background: var(--accent); }
+.cmp[data-on="true"] .svc .st { color: var(--accent); }
+.svc li:nth-child(2) .bar i { transition-delay: .06s; } .svc li:nth-child(3) .bar i { transition-delay: .12s; }
+.svc li:nth-child(4) .bar i { transition-delay: .18s; } .svc li:nth-child(5) .bar i { transition-delay: .24s; }
+.svc li:nth-child(6) .bar i { transition-delay: .3s; }
+.cmp-note { color: var(--dim); font-size: 13px; text-align: center; }
+
+/* Discord buttons */
+.btn-discord { background: #5865f2; color: #fff; }
+.btn-discord:hover { background: #6d78f5; }
+.icon-btn { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 11px; border: 1px solid var(--line); color: var(--muted); background: var(--bg2); transition: color .15s, border-color .15s; }
+.icon-btn:hover { color: #fff; border-color: #5865f2; background: #5865f2; }
+.icon-btn svg { width: 19px; height: 19px; }
+.closing .acts { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* phone: a buy bar after the top section */
+.mbar { display: none; }
+@media (max-width: 680px) {
+  .mbar { display: flex; position: fixed; z-index: 55; left: 0; right: 0; bottom: 0; gap: 10px; align-items: center;
+    padding: 10px max(16px, env(safe-area-inset-right, 0px)) calc(10px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+    background: rgba(12,14,17,.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid var(--line);
+    transform: translateY(110%); transition: transform .35s ease; }
+  .mbar.show { transform: none; }
+  .mbar .btn { flex: 1; min-height: 46px; }
+  .mbar small { color: var(--muted); font-weight: 600; }
+  footer { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+  .svc li { grid-template-columns: 82px minmax(0, 1fr); }
+  .svc .st { grid-column: 1 / -1; justify-self: start; }
+  .strip .wrap { flex-wrap: wrap; }
+}
+
 /* ---------- responsive */
 @media (max-width: 960px) {
   .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 40px; }
@@ -324,6 +411,7 @@ footer .sp { margin-left: auto; }
         <button type="button" id="lang-en" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" id="lang-ru" data-lang="ru" aria-pressed="false">RU</button>
       </div>
+      <a class="icon-btn js-discord" href="#" target="_blank" rel="noopener" aria-label="Discord" title="Discord"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .078-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03ZM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418Z"/></svg></a>
       <a class="btn btn-primary js-bot" data-start="buy" href="#" target="_blank" rel="noopener" data-i18n="nav_cta">Get a key</a>
     </div>
   </div>
@@ -331,10 +419,11 @@ footer .sp { margin-left: auto; }
 
 <main id="top">
   <section class="hero">
+    <canvas id="net" aria-hidden="true"></canvas>
     <div class="wrap">
       <div class="hero-copy">
         <p class="eyebrow" data-i18n="hero_eyebrow">VPN for Windows · built for Russia</p>
-        <h1 data-i18n-html="hero_title">Discord, YouTube and Instagram. <span class="hl">Back in one click.</span></h1>
+        <h1 id="hero-h1"><span class="rot" id="rot"><span>Discord</span></span><br><span id="hero-tail">unblocked in one click.</span></h1>
         <p class="hero-sub" data-i18n="hero_sub">Ace-VPN sends only what you choose through the VPN: your games and the blocked sites. Everything else stays on your normal connection, at full speed.</p>
         <div class="hero-cta">
           <a class="btn btn-primary js-bot" data-start="buy" href="#" target="_blank" rel="noopener">
@@ -390,9 +479,10 @@ footer .sp { margin-left: auto; }
   <div class="strip">
     <div class="wrap">
       <span class="label" data-i18n="works_with">Works with</span>
-      <ul>
-        <li>Discord</li><li>YouTube</li><li>Instagram</li><li>X</li><li>TikTok</li><li>Aion 2</li><li>Steam</li>
-      </ul>
+      <div class="marquee" aria-label="Discord, YouTube, Instagram, X, TikTok, Aion 2, Steam"><div class="track" aria-hidden="true">
+        <span>Discord</span><span>YouTube</span><span>Instagram</span><span>X</span><span>TikTok</span><span>Aion 2</span><span>Steam</span>
+        <span>Discord</span><span>YouTube</span><span>Instagram</span><span>X</span><span>TikTok</span><span>Aion 2</span><span>Steam</span>
+      </div></div>
     </div>
   </div>
 
@@ -440,13 +530,33 @@ footer .sp { margin-left: auto; }
     </div>
   </section>
 
+  <section id="compare">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow" data-i18n="c2_eyebrow">Before and after</p>
+        <h2 data-i18n="c2_title">Flip the switch</h2>
+        <p data-i18n="c2_sub">A typical evening on a Russian home connection, without and with Ace-VPN.</p>
+      </div>
+      <div class="cmp" id="cmp" data-on="false">
+        <div class="cmp-top">
+          <b class="lbl-off" data-i18n="c2_off">Without Ace</b>
+          <button class="switch big" id="cmp-switch" type="button" role="switch" aria-checked="false" aria-label="Ace-VPN"></button>
+          <b class="lbl-on" data-i18n="c2_on">With Ace</b>
+        </div>
+        <ul class="svc" id="svc"></ul>
+        <p class="cmp-note" data-i18n="c2_note">Example only. Results depend on your provider.</p>
+      </div>
+    </div>
+  </section>
+
   <section id="how">
     <div class="wrap">
       <div class="head">
         <p class="eyebrow" data-i18n="h_eyebrow">How it works</p>
         <h2 data-i18n="h_title">Up and running in three steps</h2>
       </div>
-      <div class="steps">
+      <div class="steps" id="steps">
+        <span class="fill" aria-hidden="true"></span>
         <div class="step"><span class="n">01</span><h3 data-i18n="s1_t">Buy a key in Telegram</h3><p data-i18n="s1_p">Open our bot, choose a plan and pay. With crypto, the key arrives instantly.</p></div>
         <div class="step"><span class="n">02</span><h3 data-i18n="s2_t">Install with the updater</h3><p data-i18n-html="s2_p">The bot sends you <code>AceVPN-Updater.exe</code>. Run it and enter your key.</p></div>
         <div class="step"><span class="n">03</span><h3 data-i18n="s3_t">Press connect</h3><p data-i18n="s3_p">Choose your apps and sites once. After that it is one button.</p></div>
@@ -493,16 +603,25 @@ footer .sp { margin-left: auto; }
           <h2 data-i18n="c_title">Ready when you are.</h2>
           <p data-i18n="c_sub">Get your key in Telegram and connect in a couple of minutes.</p>
         </div>
-        <a class="btn btn-primary js-bot" data-start="buy" href="#" target="_blank" rel="noopener" data-i18n="cta_telegram">Get a key in Telegram</a>
+        <div class="acts">
+          <a class="btn btn-primary js-bot" data-start="buy" href="#" target="_blank" rel="noopener" data-i18n="cta_telegram">Get a key in Telegram</a>
+          <a class="btn btn-discord js-discord" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .078-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03ZM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418Z"/></svg><span data-i18n="discord">Join our Discord</span></a>
+        </div>
       </div>
     </div>
   </div>
 </main>
 
+<div class="mbar" id="mbar">
+  <small id="mbar-price">From $8.33/mo</small>
+  <a class="btn btn-primary js-bot" data-start="buy" href="#" target="_blank" rel="noopener" data-i18n="nav_cta">Get a key</a>
+</div>
+
 <footer>
   <div class="wrap">
     <a class="brand" href="#top"><img src="data:image/png;base64,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" alt=""><span>Ace-VPN</span></a>
     <a class="js-bot" data-start="" href="#" target="_blank" rel="noopener" data-i18n="ft_bot">Telegram bot</a>
+    <a class="js-discord" href="#" target="_blank" rel="noopener">Discord</a>
     <a class="js-support" href="#" target="_blank" rel="noopener" data-i18n="ft_support">Support</a>
     <span class="sp">© 2026 Ace-VPN</span>
   </div>
@@ -513,6 +632,7 @@ footer .sp { margin-left: auto; }
 const CONFIG = {
   bot: "Ace_Vpn_buy_bot",                  // your bot's username from @BotFather, without the @
   support: "https://t.me/Ace_dev_1",
+  discord: "https://discord.gg/PFmTkDy5kN",
   plans: [[30, 10], [90, 25]],             // [days, price in USD] - keep the same as "acebot plans"
   popular: 90
 };
@@ -521,7 +641,10 @@ const T = {
   en: {
     nav_features: "Features", nav_how: "How it works", nav_pricing: "Pricing", nav_faq: "FAQ", nav_cta: "Get a key",
     hero_eyebrow: "VPN for Windows · built for Russia",
-    hero_title: 'Discord, YouTube and Instagram. <span class="hl">Back in one click.</span>',
+    hero_tail: "unblocked in one click.",
+    c2_eyebrow: "Before and after", c2_title: "Flip the switch", c2_sub: "A typical evening on a Russian home connection, without and with Ace-VPN.",
+    c2_off: "Without Ace", c2_on: "With Ace", c2_note: "Example only. Results depend on your provider.",
+    blocked: "Blocked", slow: "Very slow", highping: "High ping", works: "Works", discord: "Join our Discord", mbar: "From ${p}/mo",
     hero_sub: "Ace-VPN sends only what you choose through the VPN: your games and the blocked sites. Everything else stays on your normal connection, at full speed.",
     cta_telegram: "Get a key in Telegram", cta_how: "See how it works",
     from: "From ${p} a month", meta_days: "Days start on first use", meta_win: "Windows 10 and 11",
@@ -558,7 +681,10 @@ const T = {
   ru: {
     nav_features: "Возможности", nav_how: "Как это работает", nav_pricing: "Цены", nav_faq: "Вопросы", nav_cta: "Купить ключ",
     hero_eyebrow: "VPN для Windows · сделан для России",
-    hero_title: 'Discord, YouTube и Instagram. <span class="hl">Снова работают в один клик.</span>',
+    hero_tail: "без блокировок в один клик.",
+    c2_eyebrow: "До и после", c2_title: "Щёлкните переключатель", c2_sub: "Обычный вечер на домашнем интернете в России — без Ace-VPN и с ним.",
+    c2_off: "Без Ace", c2_on: "С Ace", c2_note: "Только пример. Результат зависит от провайдера.",
+    blocked: "Заблокирован", slow: "Очень медленно", highping: "Высокий пинг", works: "Работает", discord: "Наш Discord", mbar: "От ${p}/мес",
     hero_sub: "Ace-VPN пускает через VPN только то, что вы выбрали: игры и заблокированные сайты. Всё остальное идёт по обычному интернету, на полной скорости.",
     cta_telegram: "Купить ключ в Telegram", cta_how: "Как это работает",
     from: "От ${p} в месяц", meta_days: "Дни идут с первого запуска", meta_win: "Windows 10 и 11",
@@ -629,6 +755,7 @@ function renderPlans() {
   });
   const cheapest = Math.min(...CONFIG.plans.map(([d, p]) => p / (d / 30)));
   $("#from-price").textContent = tr("from", { p: money(cheapest) });
+  $("#mbar-price").textContent = tr("mbar", { p: money(cheapest) });
 }
 
 function applyLang() {
@@ -638,7 +765,10 @@ function applyLang() {
   $$(".lang button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
   $$(".js-bot").forEach(a => { a.href = botLink(a.dataset.start); });
   $$(".js-support").forEach(a => { a.href = CONFIG.support; });
+  $$(".js-discord").forEach(a => { a.href = CONFIG.discord; });
+  $("#hero-tail").textContent = tr("hero_tail");
   renderPlans();
+  renderServices();
   setState(state, true);
 }
 $$(".lang button").forEach(b => b.addEventListener("click", () => {
@@ -750,9 +880,104 @@ MAP.onload = () => { size(); draw(); };
 window.addEventListener("resize", () => { size(); draw(); });
 if (document.fonts) document.fonts.ready.then(() => draw());
 
+/* ---------- before / after board */
+const SERVICES = [["Discord", "blocked", 8], ["YouTube", "slow", 22], ["Instagram", "blocked", 6],
+                  ["X", "blocked", 5], ["TikTok", "blocked", 7], ["Aion 2", "highping", 35]];
+function renderServices() {
+  const on = $("#cmp").dataset.on === "true";
+  $("#svc").innerHTML = SERVICES.map(([name, off, w], i) =>
+    '<li><span class="nm">' + name + '</span><span class="bar"><i style="--w:' + (on ? (name === "YouTube" ? 92 : 96 - i) : w) + '%"></i></span>' +
+    '<span class="st">' + (on ? (name === "Aion 2" ? tr("works") + " · 45 ms" : tr("works")) : tr(off)) + "</span></li>").join("");
+}
+function flipCompare(to) {
+  const cmp = $("#cmp"), sw = $("#cmp-switch");
+  cmp.dataset.on = String(to);
+  sw.setAttribute("aria-checked", String(to));
+  // update bars in place so the width animates
+  $$("#svc li").forEach((li, i) => {
+    const [name, off, w] = SERVICES[i];
+    li.querySelector(".bar i").style.setProperty("--w", (to ? (name === "YouTube" ? 92 : 96 - i) : w) + "%");
+    li.querySelector(".st").textContent = to ? (name === "Aion 2" ? tr("works") + " · 45 ms" : tr("works")) : tr(off);
+  });
+}
+$("#cmp-switch").addEventListener("click", () => { userFlipped = true; flipCompare($("#cmp").dataset.on !== "true"); });
+let userFlipped = false;
+new IntersectionObserver((es, ob) => {
+  if (es[0].isIntersecting) { ob.disconnect(); setTimeout(() => { if (!userFlipped) flipCompare(true); }, reduce ? 0 : 700); }
+}, { threshold: .5 }).observe($("#cmp"));
+
+/* ---------- rotating word in the headline */
+const WORDS = ["Discord", "YouTube", "Instagram", "TikTok", "X", "Aion 2"];
+let wi = 0;
+if (!reduce) setInterval(() => {
+  wi = (wi + 1) % WORDS.length;
+  $("#rot").innerHTML = "<span>" + WORDS[wi] + "</span>";
+}, 2300);
+
+/* ---------- the demo connects by itself once, shortly after the page opens */
+let touched = false;
+power.addEventListener("click", () => { touched = true; }, true);
+setTimeout(() => { if (!touched && state === "off") { setState("busy"); setTimeout(() => { tConn = performance.now(); setState("on"); }, 1400); } }, reduce ? 0 : 1700);
+
+/* ---------- moving network behind the hero */
+(function net() {
+  const cv = $("#net"), cx = cv.getContext("2d"), hero = $(".hero");
+  let W = 0, H = 0, pts = [], mx = 0, my = 0, run = true;
+  function init() {
+    const r = hero.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1);
+    W = r.width; H = r.height; cv.width = W * d; cv.height = H * d; cx.setTransform(d, 0, 0, d, 0, 0);
+    const n = Math.round(Math.min(70, W * H / 16000));
+    pts = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .25 }));
+  }
+  function frame() {
+    cx.clearRect(0, 0, W, H);
+    const ox = mx * 14, oy = my * 10;
+    for (const p of pts) {
+      if (!reduce) { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > W) p.vx *= -1; if (p.y < 0 || p.y > H) p.vy *= -1; }
+    }
+    for (let i = 0; i < pts.length; i++) {
+      const a = pts[i];
+      for (let j = i + 1; j < pts.length; j++) {
+        const b = pts[j], dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
+        if (d2 < 15000) {
+          cx.strokeStyle = "rgba(46,230,200," + (0.16 * (1 - d2 / 15000)).toFixed(3) + ")";
+          cx.lineWidth = 1; cx.beginPath(); cx.moveTo(a.x + ox, a.y + oy); cx.lineTo(b.x + ox, b.y + oy); cx.stroke();
+        }
+      }
+      cx.fillStyle = "rgba(120,140,160,.55)"; cx.beginPath(); cx.arc(a.x + ox, a.y + oy, 1.4, 0, 7); cx.fill();
+    }
+    if (run && !reduce) requestAnimationFrame(frame);
+  }
+  window.addEventListener("pointermove", e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; }, { passive: true });
+  new IntersectionObserver(es => { const was = run; run = es[0].isIntersecting; if (run && !was && !reduce) requestAnimationFrame(frame); }).observe(hero);
+  window.addEventListener("resize", () => { init(); if (reduce) frame(); });
+  init(); frame();
+})();
+
+/* ---------- glow that follows the mouse on cards */
+$$(".feature, .plan, details, .cmp").forEach(el => el.classList.add("glow"));
+document.addEventListener("pointermove", e => {
+  const el = e.target.closest && e.target.closest(".glow");
+  if (!el) return;
+  const r = el.getBoundingClientRect();
+  el.style.setProperty("--mx", (e.clientX - r.left) + "px");
+  el.style.setProperty("--my", (e.clientY - r.top) + "px");
+}, { passive: true });
+document.addEventListener("pointerout", e => { const el = e.target.closest && e.target.closest(".glow"); if (el && !el.contains(e.relatedTarget)) el.style.setProperty("--my", "-400px"); });
+
+/* ---------- steps line fills as you scroll; phone buy bar after the top section */
+function onScroll() {
+  const st = $("#steps").getBoundingClientRect(), vh = innerHeight;
+  const prog = Math.max(0, Math.min(1, (vh * .85 - st.top) / (st.height + vh * .35)));
+  $("#steps").style.setProperty("--p", prog.toFixed(3));
+  $("#mbar").classList.toggle("show", $(".hero").getBoundingClientRect().bottom < 60);
+}
+window.addEventListener("scroll", onScroll, { passive: true });
+
 size();
 applyLang();
 draw();
+onScroll();
 requestAnimationFrame(loop);
 </script>
 </body>
