@@ -644,7 +644,7 @@ const T = {
     hero_tail: "unblocked in one click.",
     c2_eyebrow: "Before and after", c2_title: "Flip the switch", c2_sub: "A typical evening on a Russian home connection, without and with Ace-VPN.",
     c2_off: "Without Ace", c2_on: "With Ace", c2_note: "Example only. Results depend on your provider.",
-    blocked: "Blocked", slow: "Very slow", highping: "High ping", works: "Works", discord: "Join our Discord", mbar: "From ${p}/mo",
+    blocked: "Blocked", slow: "Very slow", highping: "High ping", works: "Works", discord: "Join our Discord", mbar: "From ${p}",
     hero_sub: "Ace-VPN sends only what you choose through the VPN: your games and the blocked sites. Everything else stays on your normal connection, at full speed.",
     cta_telegram: "Get a key in Telegram", cta_how: "See how it works",
     from: "From ${p} a month", meta_days: "Days start on first use", meta_win: "Windows 10 and 11",
@@ -664,7 +664,7 @@ const T = {
     s2_t: "Install with the updater", s2_p: "The bot sends you <code>AceVPN-Updater.exe</code>. Run it and enter your key.",
     s3_t: "Press connect", s3_p: "Choose your apps and sites once. After that it is one button.",
     p_eyebrow: "Pricing", p_title: "Simple plans", p_sub: "One key, one PC. Your days begin when you activate the key, not when you pay.",
-    month: "/ month", once: "${p} once", save: "save {s}%", popular: "Most popular", buy: "Buy in Telegram",
+    month: "/ month", per: "/ {n}", permo: "That's ${p} a month", save: "save {s}%", popular: "Most popular", buy: "Buy in Telegram",
     inc1: "Split tunnelling and site routing", inc2: "Unblock-without-server mode", inc3: "Automatic updates", inc4: "Support in Telegram",
     pay_note: "Pay with crypto through @CryptoBot and get your key straight away, or pay the seller directly.",
     q_eyebrow: "FAQ", q_title: "Questions",
@@ -684,7 +684,7 @@ const T = {
     hero_tail: "без блокировок в один клик.",
     c2_eyebrow: "До и после", c2_title: "Щёлкните переключатель", c2_sub: "Обычный вечер на домашнем интернете в России — без Ace-VPN и с ним.",
     c2_off: "Без Ace", c2_on: "С Ace", c2_note: "Только пример. Результат зависит от провайдера.",
-    blocked: "Заблокирован", slow: "Очень медленно", highping: "Высокий пинг", works: "Работает", discord: "Наш Discord", mbar: "От ${p}/мес",
+    blocked: "Заблокирован", slow: "Очень медленно", highping: "Высокий пинг", works: "Работает", discord: "Наш Discord", mbar: "От ${p}",
     hero_sub: "Ace-VPN пускает через VPN только то, что вы выбрали: игры и заблокированные сайты. Всё остальное идёт по обычному интернету, на полной скорости.",
     cta_telegram: "Купить ключ в Telegram", cta_how: "Как это работает",
     from: "От ${p} в месяц", meta_days: "Дни идут с первого запуска", meta_win: "Windows 10 и 11",
@@ -704,7 +704,7 @@ const T = {
     s2_t: "Установите через Updater", s2_p: "Бот пришлёт <code>AceVPN-Updater.exe</code>. Запустите его и введите ключ.",
     s3_t: "Нажмите «Подключить»", s3_p: "Один раз выберите приложения и сайты. Дальше — одна кнопка.",
     p_eyebrow: "Цены", p_title: "Простые тарифы", p_sub: "Один ключ — один ПК. Дни начинаются с активации ключа, а не с оплаты.",
-    month: "/ мес.", once: "${p} разово", save: "выгода {s}%", popular: "Популярный", buy: "Купить в Telegram",
+    month: "/ мес.", per: "/ {n}", permo: "Это ${p} в месяц", save: "выгода {s}%", popular: "Популярный", buy: "Купить в Telegram",
     inc1: "Раздельный туннель и сайты", inc2: "Режим разблокировки без сервера", inc3: "Автообновления", inc4: "Поддержка в Telegram",
     pay_note: "Оплатите криптовалютой через @CryptoBot и получите ключ сразу — или оплатите продавцу напрямую.",
     q_eyebrow: "Вопросы", q_title: "Частые вопросы",
@@ -747,15 +747,14 @@ function renderPlans() {
     card.innerHTML =
       (pop ? '<span class="badge">' + tr("popular") + "</span>" : "") +
       "<h3>" + planName(days) + "</h3>" +
-      '<div class="price"><b>$' + money(perMonth) + "</b><span>" + tr("month") + "</span></div>" +
-      '<p class="once">' + (days > 31 ? tr("once", { p: money(price) }) + (save >= 5 ? " · <strong>" + tr("save", { s: save }) + "</strong>" : "") : "&nbsp;") + "</p>" +
+      '<div class="price"><b>$' + money(price) + "</b><span>" + (days > 31 ? tr("per", { n: planName(days) }) : tr("month")) + "</span></div>" +
+      '<p class="once">' + (days > 31 ? tr("permo", { p: money(perMonth) }) + (save >= 5 ? " · <strong>" + tr("save", { s: save }) + "</strong>" : "") : "&nbsp;") + "</p>" +
       "<ul>" + ["inc1", "inc2", "inc3", "inc4"].map(k => "<li>" + check + "<span>" + tr(k) + "</span></li>").join("") + "</ul>" +
       '<a class="btn ' + (pop ? "btn-primary" : "btn-ghost") + '" href="' + botLink("plan_" + days) + '" target="_blank" rel="noopener">' + tr("buy") + "</a>";
     el.appendChild(card);
   });
-  const cheapest = Math.min(...CONFIG.plans.map(([d, p]) => p / (d / 30)));
-  $("#from-price").textContent = tr("from", { p: money(cheapest) });
-  $("#mbar-price").textContent = tr("mbar", { p: money(cheapest) });
+  $("#from-price").textContent = CONFIG.plans.map(([d, p]) => planName(d) + " $" + money(p)).join(" · ");
+  $("#mbar-price").textContent = tr("mbar", { p: money(Math.min(...CONFIG.plans.map(x => x[1]))) });
 }
 
 function applyLang() {
